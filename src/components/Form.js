@@ -10,8 +10,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  FormHelperText,
   Collapse,
+  FormHelperText,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
@@ -39,48 +39,44 @@ const schema = yup
     name: yup
       .string()
       .required("Required")
-      .max(255, "Enter Valid Name (Max 255 char)"),
+      .max(5, "Enter Valid Name (Max 255 char)"),
     description: yup.string().required("Required"),
     apartment_number: yup
       .number()
-      .typeError("Apartment Number is not valid")
+      .typeError("Required")
       .required("Required")
       .integer("Apartment Number is not valid"),
     floor_number: yup
       .number("Required")
-      .typeError("Floor Number is not valid")
+      .typeError("Required")
       .required("Required")
       .integer("Floor Number is not valid"),
     area: yup
       .number()
+      .typeError("Required")
       .required("Required")
       .positive()
-      .integer("Area is not valid"),
+      .integer("City is not valid"),
   })
   .required();
 
 const Form = () => {
   const [states, setStates] = useState();
-  const [areas, setAreas] = useState();
   const [showForm, setShowForm] = useState(false);
 
   const classes = useStyles();
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    mode: "onChange",
-    defaultValues: {
-      area: "",
-    },
   });
 
   const onSubmit = async (data) => {
     try {
       await axios.post("http://127.0.0.1:8000/address/", data);
+      alert("Created Successfully");
     } catch {
       alert("something went wrong");
     }
@@ -93,18 +89,6 @@ const Form = () => {
       .catch(() => alert("something went wrong"));
   }, []);
 
-  const updateAreas = async (currentStateId) => {
-    if (currentStateId) {
-      try {
-        const res = await axios.get(
-          `http://127.0.0.1:8000/address/states/${currentStateId}/areas`
-        );
-        setAreas(res.data);
-      } catch {
-        alert("somethign went wrong");
-      }
-    }
-  };
   return (
     <>
       <Button
@@ -117,25 +101,25 @@ const Form = () => {
       <Collapse in={showForm}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <Grid container spacing={2} marginBottom={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <TextField
                 id="outlined-basic"
                 label="Name"
                 variant="outlined"
-                required
                 fullWidth
-                {...register("name", { required: true })}
+                required
+                {...register("name")}
                 error={errors.name ? true : false}
                 helperText={errors.name ? errors.name.message : null}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <TextField
                 id="outlined-basic"
                 label="Address"
                 variant="outlined"
-                required
                 fullWidth
+                required
                 {...register("description")}
                 error={errors.description ? true : false}
                 helperText={
@@ -149,8 +133,8 @@ const Form = () => {
                 label="Apartment Number"
                 variant="outlined"
                 type="number"
-                required
                 fullWidth
+                required
                 {...register("apartment_number")}
                 error={errors.apartment_number ? true : false}
                 helperText={
@@ -166,8 +150,8 @@ const Form = () => {
                 label="Floor Number"
                 variant="outlined"
                 type="number"
-                required
                 fullWidth
+                required
                 {...register("floor_number")}
                 error={errors.floor_number ? true : false}
                 helperText={
@@ -175,54 +159,32 @@ const Form = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} md={6}>
-              {states && (
-                <FormControl fullWidth required>
-                  <InputLabel id="select-state">City</InputLabel>
-                  <Select
-                    labelId="select-state"
-                    label="state"
-                    defaultValue=""
-                    onChange={(e) => {
-                      reset({ area: "" });
-                      updateAreas(e.target.value);
-                    }}
-                  >
-                    {states.map((state) => (
+            <Grid item xs={12} md={12}>
+              <FormControl
+                fullWidth
+                required
+                error={errors.floor_number ? true : false}
+              >
+                <InputLabel id="select-state">City</InputLabel>
+                <Select
+                  labelId="select-state"
+                  label="state"
+                  defaultValue=""
+                  {...register("area")}
+                >
+                  {states &&
+                    states.map((state) => (
                       <MenuItem key={state.id} value={state.id}>
                         {state.name}&nbsp;&nbsp;{state.name_ar}
                       </MenuItem>
                     ))}
-                  </Select>
-                </FormControl>
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl
-                fullWidth
-                required
-                error={errors.area ? true : false}
-              >
-                <InputLabel id="select-area">Area</InputLabel>
-                <Select
-                  labelId="select-area"
-                  label="area"
-                  {...register("area", { defaultValue: "" })}
-                  defaultValue=""
-                >
-                  {areas &&
-                    areas.map((area) => (
-                      <MenuItem key={area.id} value={area.id}>
-                        {area.name}&nbsp;&nbsp;{area.name_ar}
-                      </MenuItem>
-                    ))}
                 </Select>
+                {errors.area && (
+                  <FormHelperText style={{ color: "#d32f2f" }}>
+                    {errors.area.message}
+                  </FormHelperText>
+                )}
               </FormControl>
-              {errors.area && (
-                <FormHelperText style={{ color: "#d32f2f" }}>
-                  Select valid area
-                </FormHelperText>
-              )}
             </Grid>
           </Grid>
           <Button type="submit" fullWidth variant="contained">
