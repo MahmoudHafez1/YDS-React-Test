@@ -1,32 +1,32 @@
-# Hello Candidate
+# YDS-React-Task
 
-We are happy that’s you reach this point
-We just need to test your programming skills, so this is a small task to make with react
+1- Create a form to submit a new address to the backend using RestAPI :heavy_check_mark:
 
-# Your task is to:
+2- Create a list to display the addresses from the backend :heavy_check_mark:
 
-1 - Create a form to submit a new address to the backend using RestAPI
-The form must have the following fields :
+### Bouns :
 
-- Name (String)
-- Address (String)
-- Apartment no. (integer)
-- Floor no. (integer)
-- City (Selection field – you will retrieve the data from backend API)
+- Users can edit the address :heavy_check_mark:
+- Users can delete the address :heavy_check_mark:
+- Use React-hook-form for the Form control :heavy_check_mark:
+- Use yup for form validation :heavy_check_mark:
+- Use Material-UI for Styling :heavy_check_mark:
 
-2- Create a list to display the addresses from the backend
+### Notes :
 
-# Notes :
+- Use Axios to handle API calls :heavy_check_mark:
 
-Please use Axios to handle API calls
+# Setup
 
-# Bouns :
+```
+npm install
+```
 
-- Users can edit the address
-- Users can delete the address
-- Use React-hook-form for the Form control
-- Use yup for form validation
-- Use Material-UI for Styling
+# Start
+
+```
+npm start
+```
 
 # Backend Repository
 
